@@ -18,7 +18,7 @@ RUN set -x \
 		git \
 		libapache2-mod-wsgi \
 		virtualenv \
-	&& TOKEN=$(curl -sSL https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO}:pull | \
+	&& TOKEN=$(curl -sSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO}:pull" | \
 			python -c "import sys, json; print json.load(sys.stdin)['token']") \
 	&& BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/manifests/${TAG} | \
 			python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
