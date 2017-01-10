@@ -12,7 +12,7 @@ ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/requirements} \
     GIT_REF_REPO=${GIT_REF_REPO:-https://git.openstack.org/openstack/keystone} \
     PATH=/virtualenv/bin:${PATH} \
     PROJECT=keystone \
-    TAG=${TAG:-latest-debian} \
+    TAG=${TAG:-latest-ubuntu} \
     WHEELS=${WHEELS}
 
 RUN set -x \
