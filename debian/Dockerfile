@@ -1,13 +1,19 @@
 FROM debian:jessie
 
-ARG REF
-ARG REPO
+ARG DOCKER_REPO
+ARG GIT_REPO
+ARG GIT_REF
+ARG GIT_REF_REPO
 ARG TAG
-ENV PATH=/virtualenv/bin:${PATH} \
-    REPO=${REPO:-yaodu/requirements} \
-    TAG=${TAG:-latest-debian} \
+ARG WHEELS
+ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/requirements} \
+    GIT_REPO=${GIT_REPO:-https://github.com/openstack/keystone} \
+    GIT_REF=${GIT_REF} \
+    GIT_REF_REPO=${GIT_REF_REPO:-https://git.openstack.org/openstack/keystone} \
+    PATH=/virtualenv/bin:${PATH} \
     PROJECT=keystone \
-    REF=${REF}
+    TAG=${TAG:-latest-debian} \
+    WHEELS=${WHEELS}
 
 RUN set -x \
     && apt-get update \
@@ -17,14 +23,18 @@ RUN set -x \
         curl \
         git \
         libapache2-mod-wsgi \
-    && TOKEN=$(curl -sSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO}:pull" | \
-            python -c "import sys, json; print json.load(sys.stdin)['token']") \
-    && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/manifests/${TAG} | \
-            python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
-    && curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz \
-    && git clone https://github.com/openstack/${PROJECT}.git /tmp/${PROJECT} \
+    && if [ -n "$WHEELS" ]; then \
+        curl -sSL ${WHEELS} > /tmp/wheels.tar.gz; \
+       else \
+        TOKEN=$(curl -sSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${DOCKER_REPO}:pull" | \
+                    python -c "import sys, json; print json.load(sys.stdin)['token']") \
+        && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/manifests/${TAG} | \
+                    python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
+        && curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz; \
+       fi \
+    && git clone ${GIT_REPO} /tmp/${PROJECT} \
     && if [ -n "$REF" ]; then \
-        git --git-dir /tmp/${PROJECT}/.git fetch https://git.openstack.org/openstack/${PROJECT} ${REF} \
+        git --git-dir /tmp/${PROJECT}/.git fetch ${GIT_REF_REPO} ${REF} \
         && git --git-dir /tmp/${PROJECT}/.git checkout FETCH_HEAD; \
        fi \
     && mkdir /tmp/packages \
