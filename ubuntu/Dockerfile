@@ -18,11 +18,14 @@ ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/requirements} \
 RUN set -x \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
+# Project specific packages start
         apache2 \
+        libapache2-mod-wsgi \
+# Project specific packages end
+    && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
         git \
-        libapache2-mod-wsgi \
     && if [ -n "$WHEELS" ]; then \
         curl -sSL ${WHEELS} > /tmp/wheels.tar.gz; \
        else \
@@ -46,12 +49,22 @@ RUN set -x \
     && virtualenv /virtualenv \
     && hash -r \
     && pip install --no-index --no-compile --find-links /tmp/packages --constraint /tmp/packages/upper-constraints.txt /tmp/${PROJECT} \
+    && groupadd -g 42424 ${PROJECT} \
+    && useradd -u 42424 -g ${PROJECT} -M -d /var/lib/${PROJECT} -s /usr/sbin/nologin -c "${PROJECT} user" ${PROJECT} \
+    && mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} \
+    && chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} \
+# Project specific command block start
+    && pip install --no-index --no-compile --find-links /tmp/packages --constraint /tmp/packages/upper-constraints.txt python-memcached pymysql \
+    && rm /etc/apache2/ports.conf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/* \
+    && ln -s /virtualenv/bin/keystone-wsgi-* /usr/bin/ \
+# Provide compatibility with older format keystone apache config:
+    && mkdir -p /var/www/cgi-bin/keystone \
+    && ln -s /virtualenv/bin/keystone-wsgi-public /var/www/cgi-bin/keystone/main \
+    && ln -s /virtualenv/bin/keystone-wsgi-admin /var/www/cgi-bin/keystone/admin \
+# Project specific command block end
     && apt-get purge -y --auto-remove \
         ca-certificates \
         curl \
         git \
     && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache \
-    && find / -type f \( -name "*.pyc" -o -name "pip" -o -name "easy_install" -o -name "wheel" \) -delete \
-    && groupadd -g 42424 ${PROJECT} && useradd -u 42424 -g ${PROJECT} -s /sbin/nologin -c "${PROJECT} user" ${PROJECT} \
-    && mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} \
-    && chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT}
+    && find / -type f \( -name "*.pyc" -o -name "pip" -o -name "easy_install" -o -name "wheel" \) -delete
