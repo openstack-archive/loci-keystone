@@ -37,6 +37,6 @@ COMMON_INSTALL=$(cat <<'END_HEREDOC'
 END_HEREDOC
 )
 
-for repo in debian ubuntu; do
-    awk -i inplace -v install="${COMMON_INSTALL}" 'BEGIN {p=1} /^# common install start/ {print install; p=0} /^# common install end/ {p=1} p' ${repo}/Dockerfile
+for repo in $(ls dockerfiles/Dockerfile-*); do
+    awk -i inplace -v install="${COMMON_INSTALL}" 'BEGIN {p=1} /^# common install start/ {print install; p=0} /^# common install end/ {p=1} p' ${repo}
 done
