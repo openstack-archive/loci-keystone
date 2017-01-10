@@ -18,18 +18,18 @@ RUN set -x \
 		git \
 		libapache2-mod-wsgi \
 		virtualenv \
-	&& TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO}:pull" | \
+	&& TOKEN=$(curl -sSL https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO}:pull | \
 			python -c "import sys, json; print json.load(sys.stdin)['token']") \
-	&& BLOB=$(curl -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/manifests/${TAG} | \
+	&& BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/manifests/${TAG} | \
 			python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
-	&& curl -L -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz \
+	&& curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz \
 	&& git clone https://github.com/openstack/${PROJECT}.git /tmp/${PROJECT} \
 	&& if [ -n "${REF+x}" ]; then \
 		git --git-dir /tmp/${PROJECT}/.git fetch https://git.openstack.org/openstack/${PROJECT} ${REF} \
 		&& git --git-dir /tmp/${PROJECT}/.git checkout FETCH_HEAD; \
 	   fi \
 	&& mkdir /tmp/packages \
-	&& tar xvf /tmp/wheels.tar.gz -C /tmp/packages/ --strip-components=2 root/packages \
+	&& tar xf /tmp/wheels.tar.gz -C /tmp/packages/ --strip-components=2 root/packages \
 	&& virtualenv /virtualenv \
 	&& hash -r \
 	&& pip install --no-compile --upgrade pip setuptools \
