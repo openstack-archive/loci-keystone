@@ -40,4 +40,7 @@ RUN set -x \
 		git \
 		virtualenv \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache \
-	&& find / -type f \( -name "*.pyc" -o -name "pip" -o -name "easy_install" -o -name "wheel" \) -delete
+	&& find / -type f \( -name "*.pyc" -o -name "pip" -o -name "easy_install" -o -name "wheel" \) -delete \
+	&& groupadd -g 42424 ${PROJECT} && useradd -u 42424 -g ${PROJECT} -s /sbin/nologin -c "${PROJECT} user" ${PROJECT} \
+	&& mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} \
+	&& chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT}
