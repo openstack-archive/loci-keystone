@@ -23,7 +23,7 @@ RUN set -x \
             python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
     && curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz \
     && git clone https://github.com/openstack/${PROJECT}.git /tmp/${PROJECT} \
-    && if [ -n "${REF+x}" ]; then \
+    && if [ -n "$REF" ]; then \
         git --git-dir /tmp/${PROJECT}/.git fetch https://git.openstack.org/openstack/${PROJECT} ${REF} \
         && git --git-dir /tmp/${PROJECT}/.git checkout FETCH_HEAD; \
        fi \
