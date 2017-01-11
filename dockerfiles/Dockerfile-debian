@@ -1,19 +1,13 @@
 FROM debian:jessie
 
-ARG DOCKER_REPO
-ARG GIT_REPO
-ARG GIT_REF
-ARG GIT_REF_REPO
-ARG TAG
+ARG DOCKER_REPO=yaodu/requirements
+ARG DOCKER_TAG=latest
 ARG WHEELS
-ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/openstack-requirements} \
-    GIT_REPO=${GIT_REPO:-https://github.com/openstack/keystone} \
-    GIT_REF=${GIT_REF} \
-    GIT_REF_REPO=${GIT_REF_REPO:-https://git.openstack.org/openstack/keystone} \
-    PATH=/virtualenv/bin:${PATH} \
-    PROJECT=keystone \
-    TAG=${TAG:-latest} \
-    WHEELS=${WHEELS}
+ARG GIT_REPO=https://github.com/openstack/keystone
+ARG GIT_REF
+ARG GIT_REF_REPO=https://git.openstack.org/openstack/keystone
+ENV PATH=/virtualenv/bin:${PATH} \
+    PROJECT=keystone
 
 RUN set -x \
     && apt-get update \
@@ -29,13 +23,13 @@ RUN set -x \
        else \
         TOKEN=$(curl -sSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${DOCKER_REPO}:pull" | \
                     python -c "import sys, json; print json.load(sys.stdin)['token']") \
-        && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/manifests/${TAG} | \
+        && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/manifests/${DOCKER_TAG} | \
                     python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \
         && curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz; \
        fi \
     && git clone ${GIT_REPO} /tmp/${PROJECT} \
-    && if [ -n "$REF" ]; then \
-        git --git-dir /tmp/${PROJECT}/.git fetch ${GIT_REF_REPO} ${REF} \
+    && if [ -n "$GIT_REF" ]; then \
+        git --git-dir /tmp/${PROJECT}/.git fetch ${GIT_REF_REPO} ${GIT_REF} \
         && git --git-dir /tmp/${PROJECT}/.git checkout FETCH_HEAD; \
        fi \
     && mkdir /tmp/packages \

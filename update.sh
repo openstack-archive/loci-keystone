@@ -10,13 +10,13 @@ COMMON_INSTALL=$(cat <<'END_HEREDOC'
        else \\\n\
         TOKEN=$(curl -sSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${DOCKER_REPO}:pull" | \\\n\
                     python -c "import sys, json; print json.load(sys.stdin)['token']") \\\n\
-        && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/manifests/${TAG} | \\\n\
+        && BLOB=$(curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/manifests/${DOCKER_TAG} | \\\n\
                     python -c "import sys, json; print json.load(sys.stdin)['fsLayers'][0]['blobSum']") \\\n\
         && curl -sSL -H "Authorization: Bearer ${TOKEN}" https://registry.hub.docker.com/v2/${DOCKER_REPO}/blobs/${BLOB} > /tmp/wheels.tar.gz; \\\n\
        fi \\\n\
     && git clone ${GIT_REPO} /tmp/${PROJECT} \\\n\
-    && if [ -n "$REF" ]; then \\\n\
-        git --git-dir /tmp/${PROJECT}/.git fetch ${GIT_REF_REPO} ${REF} \\\n\
+    && if [ -n "$GIT_REF" ]; then \\\n\
+        git --git-dir /tmp/${PROJECT}/.git fetch ${GIT_REF_REPO} ${GIT_REF} \\\n\
         && git --git-dir /tmp/${PROJECT}/.git checkout FETCH_HEAD; \\\n\
        fi \\\n\
     && mkdir /tmp/packages \\\n\
