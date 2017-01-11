@@ -22,8 +22,8 @@ RUN set -x \
         apache2 \
         libapache2-mod-wsgi \
 # Project specific packages end
-# common install start
     && apt-get install -y --no-install-recommends ca-certificates curl git \
+# common install start
     && if [ -n "$WHEELS" ]; then \
         curl -sSL ${WHEELS} > /tmp/wheels.tar.gz; \
        else \
@@ -55,11 +55,11 @@ RUN set -x \
 # Project specific command block start
     && pip install --no-index --no-compile --find-links /tmp/packages --constraint /tmp/packages/upper-constraints.txt python-memcached pymysql \
     && rm /etc/apache2/ports.conf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/* \
-    && ln -s /virtualenv/bin/keystone-wsgi-* /usr/bin/ \
+    && cp /virtualenv/bin/keystone-wsgi-* /usr/bin/ \
 # Provide compatibility with older format keystone apache config:
     && mkdir -p /var/www/cgi-bin/keystone \
-    && ln -s /virtualenv/bin/keystone-wsgi-public /var/www/cgi-bin/keystone/main \
-    && ln -s /virtualenv/bin/keystone-wsgi-admin /var/www/cgi-bin/keystone/admin \
+    && cp /virtualenv/bin/keystone-wsgi-public /var/www/cgi-bin/keystone/main \
+    && cp /virtualenv/bin/keystone-wsgi-admin /var/www/cgi-bin/keystone/admin \
 # Project specific command block end
     && apt-get purge -y --auto-remove ca-certificates curl git \
     && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache \

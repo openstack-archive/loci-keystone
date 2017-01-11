@@ -5,7 +5,6 @@ set -u
 
 COMMON_INSTALL=$(cat <<'END_HEREDOC'
 # common install start
-    && apt-get install -y --no-install-recommends ca-certificates curl git \\\n\
     && if [ -n "$WHEELS" ]; then \\\n\
         curl -sSL ${WHEELS} > /tmp/wheels.tar.gz; \\\n\
        else \\\n\
