@@ -6,13 +6,13 @@ ARG GIT_REF
 ARG GIT_REF_REPO
 ARG TAG
 ARG WHEELS
-ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/requirements} \
+ENV DOCKER_REPO=${DOCKER_REPO:-yaodu/openstack-requirements} \
     GIT_REPO=${GIT_REPO:-https://github.com/openstack/keystone} \
     GIT_REF=${GIT_REF} \
     GIT_REF_REPO=${GIT_REF_REPO:-https://git.openstack.org/openstack/keystone} \
     PATH=/virtualenv/bin:${PATH} \
     PROJECT=keystone \
-    TAG=${TAG:-latest-ubuntu} \
+    TAG=${TAG:-ubuntu} \
     WHEELS=${WHEELS}
 
 RUN set -x \
