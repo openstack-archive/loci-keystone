@@ -1,13 +1,13 @@
 FROM ubuntu:xenial
 
-ARG DOCKER_REPO=yaodu/requirements
-ARG DOCKER_TAG=ubuntu
-ARG WHEELS
-ARG GIT_REPO=https://github.com/openstack/keystone
-ARG GIT_REF
-ARG GIT_REF_REPO=https://git.openstack.org/openstack/keystone
 ENV PATH=/virtualenv/bin:${PATH} \
     PROJECT=keystone
+ARG DOCKER_REPO=yaodu/openstack-requirements
+ARG DOCKER_TAG=ubuntu
+ARG WHEELS
+ARG GIT_REPO=https://github.com/openstack/${PROJECT}
+ARG GIT_REF
+ARG GIT_REF_REPO=https://git.openstack.org/openstack/${PROJECT}
 
 RUN set -x \
     && apt-get update \
