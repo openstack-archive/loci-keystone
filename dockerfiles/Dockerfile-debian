@@ -2,7 +2,7 @@ FROM debian:jessie
 
 ENV PATH=/virtualenv/bin:${PATH} \
     PROJECT=keystone
-ARG DOCKER_REPO=yaodu/requirements
+ARG DOCKER_REPO=yaodu/openstack-requirements
 ARG DOCKER_TAG=latest
 ARG WHEELS
 ARG GIT_REPO=https://github.com/openstack/${PROJECT}
