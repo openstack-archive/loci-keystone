@@ -49,6 +49,7 @@ RUN set -x \
 # Project specific command block start
     && pip install --no-index --no-compile --find-links /tmp/packages --constraint /tmp/packages/upper-constraints.txt python-memcached pymysql \
     && rm /etc/apache2/ports.conf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/* \
+    && touch /etc/apache2/ports.conf \
     && cp /virtualenv/bin/keystone-wsgi-* /usr/bin/ \
 # Provide compatibility with older format keystone apache config:
     && mkdir -p /var/www/cgi-bin/keystone \
