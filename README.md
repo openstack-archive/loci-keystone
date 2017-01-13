@@ -5,13 +5,17 @@ Yaodu/keystone is a set of Dockerfiles that builds lightweight deployment agnost
 
 Images are built in the Docker Hub automatically on each push to the master branch to provide a continuously updated set of images based on a number of distributions. Additionally, this repo may be cloned and used to build images for OpenStack Keystone either for development purposes or as part of a CI/CD workflow.
 
+### Image Layer Info
+[![](https://images.microbadger.com/badges/version/yaodu/keystone:latest.svg)](https://microbadger.com/images/yaodu/keystone:latest "yaodu/keystone:latest") [![](https://images.microbadger.com/badges/image/yaodu/keystone:latest.svg)](https://microbadger.com/images/yaodu/keystone:latest "yaodu/keystone:latest")
 
-## Building locally
-It's really easy to build images locally for the distro of your choice. To clone the repo and build run the following:
+[![](https://images.microbadger.com/badges/version/yaodu/keystone:ubuntu.svg)](https://microbadger.com/images/yaodu/keystone:ubuntu "yaodu/keystone:ubuntu") [![](https://images.microbadger.com/badges/image/yaodu/keystone:ubuntu.svg)](https://microbadger.com/images/yaodu/keystone:ubuntu "yaodu/keystone:ubuntu")
+
+[![](https://images.microbadger.com/badges/version/yaodu/keystone:centos.svg)](https://microbadger.com/images/yaodu/keystone:centos "yaodu/keystone:centos") [![](https://images.microbadger.com/badges/image/yaodu/keystone:centos.svg)](https://microbadger.com/images/yaodu/keystone:centos "yaodu/keystone:centos")
+
+### Building locally
+It's really easy to build images locally for the distro of your choice. To build an image you only need to run:
 ``` bash
-$ git clone https://github.com/yaodu/docker-keystone.git
-$ cd ./docker-keystone
-$ docker build dockerfiles \
+$ docker build https://github.com/yaodu/docker-keystone.git \
   --file dockerfiles/Dockerfile-debian \
   --tag yaodu/keystone:latest
 ```
@@ -27,7 +31,7 @@ For more advanced building you can use docker build arguments to define:
 
 This makes it really easy to integrate Yaodu images into your development or CI/CD workflow, for example, if you wanted to build an image from [this PS](https://review.openstack.org/#/c/418167/) you could run:
 ``` bash
-$ docker build dockerfiles \
+$ docker build https://github.com/yaodu/docker-keystone.git \
   --file dockerfiles/Dockerfile-ubuntu \
   --tag mydockernamespace/keystone-testing:418167-1 \
   --build-arg GIT_REPO=http://git.openstack.org/openstack/keystone.git \
@@ -36,11 +40,11 @@ $ docker build dockerfiles \
 ```
 
 
-## Customizing
+### Customizing
 The images should contain all the required assets for running the service. But if you wish or need to customize the `yaodu/keystone` image that's great! We hope to have built the images to make this as easy and flexible as possible. To do this we recommend that you perform any required customisation in a child image using a pattern similar to:
 
 ``` Dockerfile
-FROM yaodu/keystone:debian
+FROM yaodu/keystone:latest
 MAINTAINER you@example.com
 
 RUN set -x \
