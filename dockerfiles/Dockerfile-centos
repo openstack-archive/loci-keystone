@@ -66,5 +66,5 @@ RUN set -x \
     && rpm -e --nodeps centos-logos \
     && yum clean all \
     && rm -rf /tmp/* /root/.cache \
-    && pip uninstall setuptools wheel pip -y \
+    && pip uninstall wheel pip -y \
     && find / -type f -name "*.pyc" -delete
