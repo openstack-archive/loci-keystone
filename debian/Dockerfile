@@ -18,6 +18,4 @@ RUN set -x \
     && apt-get install -y --no-install-recommends \
         apache2 \
         libapache2-mod-wsgi \
-    && rm /etc/apache2/ports.conf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/* \
-    && touch /etc/apache2/ports.conf \
     && /tmp/cleanup.sh

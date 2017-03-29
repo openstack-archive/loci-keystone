@@ -18,6 +18,4 @@ RUN set -x \
         httpd \
         mod_ssl \
         mod_wsgi \
-    && rm /etc/httpd/conf.d/* \
-    && sed -i 's/^Listen 80/#Listen 80/' /etc/httpd/conf/httpd.conf \
     && /tmp/cleanup.sh
