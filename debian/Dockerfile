@@ -15,7 +15,7 @@ RUN set -x \
     && curl -sSL $SCRIPTS | tar xz -C /tmp/ --strip-components=2 \
     && /tmp/download.sh $DOCKER_REPO $DOCKER_TAG $WHEELS \
     && /tmp/install.sh $PROJECT $GIT_REPO $GIT_REF_REPO $GIT_REF \
-    && apt-get install -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends  \
         apache2 \
         libapache2-mod-wsgi \
     && /tmp/cleanup.sh
