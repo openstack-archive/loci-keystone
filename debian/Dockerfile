@@ -18,4 +18,5 @@ RUN set -x \
     && apt-get install -y --no-install-recommends \
         apache2 \
         libapache2-mod-wsgi \
-    && /tmp/cleanup.sh
+    && /tmp/cleanup.sh \
+    && false
