@@ -13,6 +13,7 @@ ARG OVERRIDE=override
 ADD $OVERRIDE /
 
 RUN set -x \
+    && ip a \
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl git \
     && git init /tmp/common/ \
