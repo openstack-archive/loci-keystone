@@ -14,13 +14,12 @@ ADD $OVERRIDE /
 
 RUN set -x \
     && apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl git \
+    && apt-get install -y --no-install-recommends git \
+        apache2 \
+        libapache2-mod-wsgi \
     && git init /tmp/common/ \
     && git --git-dir /tmp/common/.git fetch --depth 1 $SCRIPTS_REPO $SCRIPTS_REF \
     && git --work-tree /tmp/common --git-dir /tmp/common/.git checkout FETCH_HEAD \
     && /tmp/common/scripts/download.sh \
     && /tmp/common/scripts/install.sh \
-    && apt-get install -y --no-install-recommends \
-        apache2 \
-        libapache2-mod-wsgi \
     && /tmp/common/scripts/cleanup.sh
