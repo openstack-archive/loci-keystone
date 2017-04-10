@@ -18,6 +18,8 @@ RUN set -x \
     && git init /tmp/common/ \
     && git --git-dir /tmp/common/.git fetch --depth 1 $SCRIPTS_REPO $SCRIPTS_REF \
     && git --work-tree /tmp/common --git-dir /tmp/common/.git checkout FETCH_HEAD \
+    && git --git-dir /tmp/common/.git log -n10 \
+    && git --git-dir /tmp/common/.git branch \
     && /tmp/common/scripts/download.sh \
     && /tmp/common/scripts/install.sh \
     && apt-get install -y --no-install-recommends \
