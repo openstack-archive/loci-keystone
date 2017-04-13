@@ -17,6 +17,7 @@ RUN set -x \
     && apt-get install -y --no-install-recommends git \
         apache2 \
         libapache2-mod-wsgi \
+        ca-certificates \
     && git init /tmp/common/ \
     && git --git-dir /tmp/common/.git fetch --depth 1 $SCRIPTS_REPO $SCRIPTS_REF \
     && git --work-tree /tmp/common --git-dir /tmp/common/.git checkout FETCH_HEAD \
