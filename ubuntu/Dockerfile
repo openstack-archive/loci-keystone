@@ -12,6 +12,7 @@ ADD $OVERRIDE /
 
 RUN set -x \
     && apt-get update \
+    && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends git \
         apache2 \
         libapache2-mod-wsgi \
