@@ -8,6 +8,7 @@ ARG PROJECT_REF=master
 ARG SCRIPTS_REPO=https://github.com/openstack/loci
 ARG SCRIPTS_REF=master
 ARG OVERRIDE=override
+ARG DISTRO
 
 ADD $OVERRIDE /
 
