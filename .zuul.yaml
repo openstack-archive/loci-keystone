@@ -1,0 +1,8 @@
+- project:
+    name: openstack/loci-keystone
+    check:
+      jobs:
+        - noop
+    gate:
+      jobs:
+        - noop
