@@ -1,5 +1,4 @@
 - project:
-    name: openstack/loci-keystone
     check:
       jobs:
         - noop
